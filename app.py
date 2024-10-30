@@ -12,7 +12,6 @@ from langserve import add_routes
 from functions.chat_history import _per_request_config_modifier
 from functions.auth import azure_scheme
 from chains.base_chain import chain_with_history
-from chains.rag_chain import rag_chain_with_history
 from models.response_models import CookieResponse
 
 
@@ -51,23 +50,6 @@ add_routes(
     disabled_endpoints=["playground", "batch"],
     dependencies=[Security(azure_scheme)],
     path="/base"
-)
-
-
-add_routes(
-    app,
-    rag_chain_with_history,
-    per_req_config_modifier=_per_request_config_modifier,
-    # Disable playground and batch
-    # 1) Playground we're passing information via headers, which is not supported via
-    #    the playground right now.
-    # 2) Disable batch to avoid users being confused. Batch will work fine
-    #    as long as users invoke it with multiple configs appropriately, but
-    #    without validation users are likely going to forget to do that.
-    #    In addition, there's likely little sense in support batch for a chatbot.
-    disabled_endpoints=["playground", "batch"],
-    dependencies=[Security(azure_scheme)],
-    path="/rag"
 )
 
 
