@@ -1,9 +1,8 @@
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.prompts import ChatPromptTemplate
 from langchain.schema.runnable import RunnablePassthrough
 from langchain_openai import AzureChatOpenAI
 
 from functions.rag_services import vectorstore, format_docs
-from functions.chat_history import chain_with_history
 from models.request_models import QuestionWithFilter
 
 
@@ -12,7 +11,7 @@ llm = AzureChatOpenAI(deployment_name="gpt-4-turbo")
 
 # Prompt
 system_prompt = """
-                Based on the question, user history, and the given context 
+                Based on the question and the given context 
                 write a natural language response that will answer the customer query:
                         context: {context}
                 """
@@ -20,7 +19,6 @@ system_prompt = """
 prompt = ChatPromptTemplate.from_messages(
     [
         ("system", system_prompt),
-        MessagesPlaceholder(variable_name="history"),
         ("human", "{question}"),
     ]
 )
@@ -38,11 +36,4 @@ rag_chain = (
     )
     | prompt
     | llm
-)
-
-# RAG chain with history
-rag_chain_with_history = chain_with_history(
-    rag_chain,
-    input_messages_key= "question",
-    history_message_key="history"
 ).with_types(input_type=QuestionWithFilter)
