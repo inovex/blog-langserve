@@ -8,3 +8,4 @@ fastapi-azure-auth==5.0.1
 langchain-mongodb==0.2.0
 pymongo[srv]==4.9.1
 python-dotenv==1.0.1
+bs4==0.0.2
