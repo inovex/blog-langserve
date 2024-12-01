@@ -1,0 +1,32 @@
+version: "3.1"
+
+services:
+  mongo:
+    image: mongo
+    restart: always
+    container_name: mongo
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: TestUser
+      MONGO_INITDB_ROOT_PASSWORD: TestPassword
+    volumes:
+      - ./mongo_data:/data/db/
+  
+  mongo-init:
+    image: mongo-init
+    build: init-scripts/
+    depends_on:
+      - mongo
+    env_file:
+      - ./.env
+
+  langserve:
+    image: langserve
+    build: langserve/
+    ports:
+      - 8000:8000
+    depends_on:
+      - mongo-init
+    env_file:
+      - ./.env

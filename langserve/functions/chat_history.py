@@ -21,7 +21,7 @@ def _is_valid_identifier(value: str) -> bool:
 def create_session_factory(
     mongodb_user: str,
     mongodb_password: str,
-    mongodb_cluster: str,
+    mongodb_port: str,
     db_name: str,
     chat_history_collection: str
 ) -> Callable[[str], BaseChatMessageHistory]:
@@ -32,7 +32,7 @@ def create_session_factory(
     Args:
         mongodb_user: MongoDB username.
         mongodb_password: MongoDB password.
-        mongodb_cluster: MongoDB cluster.
+        mongodb_port: MongoDB port.
         db_name: Name of the database to be used.
         chat_history_collection: Name of the collection inside
             the specified database to be used.
@@ -42,9 +42,9 @@ def create_session_factory(
         by user ID and conversation ID.
     """
 
-    # MongoDB connection string including user, password, cluster
+    # MongoDB connection string including user, password, port
     connection_string = (
-        f"mongodb+srv://{mongodb_user}:{mongodb_password}@{mongodb_cluster}"
+        f"mongodb://{mongodb_user}:{mongodb_password}@mongo:{mongodb_port}"
     )
 
     def get_chat_history(
@@ -120,7 +120,7 @@ def chain_with_history(
         create_session_factory(
             os.environ.get("MONGODB_USER"),
             os.environ.get("MONGODB_PASSWORD"),
-            os.environ.get("MONGODB_CLUSTER"),
+            os.environ.get("MONGODB_PORT"),
             os.environ.get("DB_NAME"),
             os.environ.get("CHAT_HISTORIES_COLLECTION")
         ),
