@@ -2,7 +2,7 @@
 
 ## Currently considered functions
 ### Chat history
-- chat histories are managed in a MongoDB collection
+- chat histories are managed in a MongoDB (managed with a Docker container) collection
 - user ids and conversation ids are stored in the "SessionId" field (with value: {user_id}%{conversation_id})
 - messages are stored in the "history" field 
 
@@ -12,66 +12,15 @@
 ### Setup
 - Requirements
     - Docker
-    - Python 3.12 or greater; Pip 24.2 or greater
-
-### Setup MongoDB Cloud
-- Create a MongoDB cloud account on the website: https://www.mongodb.com/
-- Create a cluster on your MongoDB account
-- Create a database within the created cluster
-- Create q collection within the created database
-    - A collection for managing chat history (e.g. `chat_histories`)
-- Extract the MongoDB connection string for your created cluster
-    - Navigate to Overview page of your created cluster and click on the `Connect` button
-    - On the popup window select Python driver as option and extract the connection string with the structure
-        ```
-        mongodb+srv://<mongodb_username>:<mongodb_password>@<mongodb_cluster>
-        ```
-    - where `mongodb_cluster` has the structure: <cluster_name>.<additional_str>.mongodb.net
 
 ### Setup environment variables
 - Create a `.env` file in root directory of the project and copy the contents from the `.env.template` file
-- Replace in the file the variables for Azure OpenAI and MongoDB setup
+- Replace in the file the variables for Azure OpenAI
 
-### Setup Python virtual environment and start the LangServe App
-1) Create a Python virtual environment
+### Start MongoDB and LangServe App
+1) Nativate to the root directory of the project in your terminal and execute the command:
     ```
-    virtualenv path/to/venv/langserve_env
-    ```
-    or use anaconda
-    ```
-    conda create --name langserve_env python=3.12
-    ```
-2) Activate the virtual environment
-    ```
-    source path/to/venv/langserve_env/bin/activate
-    ```
-    or for anaconda
-    ```
-    conda activate langserve_env
-    ```
-3) Install packages
-    ```
-    pip install -r requirements.txt
-    ```
-
-Alternative using Docker:
-
-1) Nativate to the root directory of the project in your terminal and build the docker image with the command
-
-    ```
-    docker build -t langservegpt .
-    ```
-
-### Start the LangServe App
-1) If project setup was realized with virtualenv or conda, execute the following command on your terminal (with activated Python virtual environment and on the root directory of the project):
-    ```
-    python app.py
-    ```
-
-    If project setup was realized with docker, execute the following command on your terminal:
-
-    ```
-    docker run -p 8000:8000 langservegpt
+    docker compose up --build
     ```
 
 2) You can access now the Swagger UI with http://localhost:8000/docs on your browser
